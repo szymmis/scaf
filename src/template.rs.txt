@@ -1,0 +1,24 @@
+fn part_one(input: &str) -> i32 {
+    todo!()
+}
+
+// <<FN_2>>
+
+fn main() {
+    let input = std::fs::read_to_string("input.txt").unwrap();
+    println!("Part one: {}", part_one(&input));
+    // <<PRINT_2>>
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn part_one_example() {
+        let input = "<<INPUT_1>>";
+        assert_eq!(part_one(input), <<ANSWER_1>>);
+    }
+
+    // <<TEST_2>>
+}
