@@ -55,7 +55,7 @@ export class Scaffolder {
     dirname: string,
     patches: Patches
   ) {
-    const templatePath = path.join(import.meta.dir, `templates/${template}`);
+    const templatePath = path.join(import.meta.dir, `../templates/${template}`);
 
     if (!(await fs.exists(templatePath))) {
       throw new Error(`Template ${template} doesn't exist!`);

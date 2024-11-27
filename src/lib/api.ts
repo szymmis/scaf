@@ -11,6 +11,14 @@ export class Api {
     const headers = new Headers();
     headers.append("Cookie", `session=${this.getApiKey()}`);
     const response = await fetch(url, { headers });
+
+    if (!response.ok) {
+      throw new HttpError(
+        `Failed to fetch ${url}: ${response.statusText}`,
+        response.status
+      );
+    }
+
     return response.text();
   }
 
@@ -28,5 +36,11 @@ export class Api {
 
   static async fetchPuzzleInput(year: number, day: number): Promise<string> {
     return this.fetch(this.getURL(`${year}/day/${day}/input`));
+  }
+}
+
+export class HttpError extends Error {
+  constructor(message: string, public status: number) {
+    super(message);
   }
 }
