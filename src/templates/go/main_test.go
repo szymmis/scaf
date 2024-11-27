@@ -3,7 +3,7 @@ package main
 import "testing"
 
 func TestPartOne(t *testing.T) {
-	input := "{{INPUT_1}}"
+	input := `{{INPUT_1}}`
 	expected := {{ANSWER_1}}
 
 	output := PartOne(input)
@@ -15,7 +15,7 @@ func TestPartOne(t *testing.T) {
 
 /**scaf**
 func TestPartTwo(t *testing.T) {
- 	input := "{{INPUT_2}}"
+ 	input := `{{INPUT_2}}`
  	expected := {{ANSWER_2}} 
  
  	output := PartTwo(input)

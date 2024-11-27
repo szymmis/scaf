@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
+    "commander": "^12.1.0",
     "open": "^9.1.0"
   },
   "devDependencies": {
