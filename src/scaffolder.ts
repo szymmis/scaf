@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import { Cache } from "./cache";
 
 type Patches = Record<string, string | number>;
 
@@ -86,6 +87,10 @@ export class Scaffolder {
 
     const patches = this.getPatches(year, day, "one", examples[0], answers[0]);
     await this.copyTemplate(template, dirname, patches);
+    await fs.writeFile(
+      path.join(dirname, "input.txt"),
+      await Cache.loadTaskInput(year, day)
+    );
 
     return dirname;
   }
