@@ -1,0 +1,3 @@
+[package]
+name = "task_{{DAY}}"
+version = "0.1.0"

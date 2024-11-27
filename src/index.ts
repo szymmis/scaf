@@ -21,7 +21,13 @@ async function main(year: number, day: number) {
       open(Api.getTaskURL(year, day));
     }
   } else {
-    const output = await Scaffolder.initTask(year, day, examples, answers);
+    const output = await Scaffolder.initTask(
+      "go",
+      year,
+      day,
+      examples,
+      answers
+    );
     if (process.argv.includes("--open") && output) {
       execSync(`code ${output}/src/main.rs`);
       open(Api.getTaskURL(year, day));

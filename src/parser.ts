@@ -18,12 +18,13 @@ export class Parser {
 
     const answers = $("article.day-desc")
       .toArray()
-      .map((el) =>
-        $(el)
-          .find("code > em")
-          .toArray()
-          .map((el) => $(el).text())
-          .pop()
+      .map(
+        (el) =>
+          $(el)
+            .find("code > em")
+            .toArray()
+            .map((el) => $(el).text())
+            .pop() ?? ""
       );
 
     return { examples, answers, hasPartTwo };

@@ -1,8 +1,7 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
-import { Cache } from "./cache";
 
-import templateRs from "./template.rs.txt";
+type Patches = Record<string, string | number>;
 
 export class Scaffolder {
   private static getDirName(year: number, day: number): string {
@@ -13,34 +12,80 @@ export class Scaffolder {
     }
   }
 
+  private static getPatches(
+    year: number,
+    day: number,
+    task: "one" | "two",
+    input: string,
+    answer: string | number
+  ): Patches {
+    return {
+      DAY: day.toString().padStart(2, "0"),
+      YEAR: year.toString(),
+      [task === "one" ? "INPUT_1" : "INPUT_2"]: input,
+      [task === "one" ? "ANSWER_1" : "ANSWER_2"]: answer,
+    };
+  }
+
+  private static async applyPatchesToFile(filepath: string, patches: Patches) {
+    await fs.writeFile(
+      filepath,
+      Object.entries(patches).reduce(
+        (result, [key, value]) =>
+          result.replace(new RegExp(`{{${key}}}`, "g"), String(value)),
+        await fs.readFile(filepath, "utf8")
+      ),
+      "utf8"
+    );
+  }
+
+  private static async removeCommentsFromFile(filepath: string) {
+    await fs.writeFile(
+      filepath,
+      (await fs.readFile(filepath, "utf8"))
+        .replaceAll("/**scaf**", "")
+        .replaceAll("**scaf**/", ""),
+      "utf8"
+    );
+  }
+
+  private static async copyTemplate(
+    template: string,
+    dirname: string,
+    patches: Patches
+  ) {
+    const templatePath = path.join(import.meta.dir, `templates/${template}`);
+
+    if (!(await fs.exists(templatePath))) {
+      throw new Error(`Template ${template} doesn't exist!`);
+    }
+    await fs.mkdir(dirname, { recursive: true });
+
+    // @ts-expect-error Apparently `recursive` is not a valid option in bun types
+    const filenames = await fs.readdir(templatePath, { recursive: true });
+    for (const filename of filenames) {
+      const source = path.join(templatePath, filename);
+      const destination = path.join(dirname, filename);
+      if (filename !== "__config.json" && (await fs.stat(source)).isFile()) {
+        await fs.cp(source, destination);
+        await this.applyPatchesToFile(destination, patches);
+      }
+    }
+  }
+
   static async initTask(
+    template: string,
     year: number,
     day: number,
     examples: string[],
-    answers: string[]
+    answers: (string | number)[]
   ): Promise<string | null> {
     const dirname = this.getDirName(year, day);
 
-    if (fs.existsSync(dirname)) return dirname;
+    if (await fs.exists(dirname)) return dirname;
 
-    fs.mkdirSync(dirname);
-    fs.mkdirSync(path.join(dirname, "src"));
-    fs.writeFileSync(
-      path.join(dirname, "input.txt"),
-      await Cache.loadTaskInput(year, day)
-    );
-    fs.writeFileSync(
-      path.join(dirname, "src", "main.rs"),
-      templateRs
-        .replace("<<INPUT_1>>", examples[0].replaceAll("\n", "\\n"))
-        .replace("<<ANSWER_1>>", answers[0])
-    );
-    fs.writeFileSync(
-      path.join(dirname, "Cargo.toml"),
-      `[package]
-      name="task_${day.toString().padStart(2, "0")}"
-      version="0.1.0"`
-    );
+    const patches = this.getPatches(year, day, "one", examples[0], answers[0]);
+    await this.copyTemplate(template, dirname, patches);
 
     return dirname;
   }
@@ -49,34 +94,24 @@ export class Scaffolder {
     year: number,
     day: number,
     examples: string[],
-    answers: string[]
+    answers: (string | number)[]
   ) {
     const dirname = this.getDirName(year, day);
 
-    if (!fs.existsSync(dirname))
+    if (!(await fs.exists(dirname)))
       throw new Error(`Directory of task ${year}/${day} doesn't exist!`);
 
-    const srcFilePath = path.join(dirname, "src", "main.rs");
+    const patches = this.getPatches(year, day, "two", examples[1], answers[1]);
 
-    fs.writeFileSync(
-      srcFilePath,
-      fs
-        .readFileSync(srcFilePath, "utf8")
-        .replace(
-          "// <<FN_2>>",
-          "fn part_two(input: &str) -> i32 {\n\ttodo!()\n}"
-        )
-        .replace("// <<PRINT_2>>", 'println!("Part two: {}", part_two(&input))')
-        .replace(
-          "// <<TEST_2>>",
-          `#[test]\n\tfn part_two_example() {\n\t\tlet input = "${(
-            examples[1] ?? examples[0]
-          ).replaceAll("\n", "\\n")}";\n\t\tassert_eq!(part_two(input), ${
-            answers[1] ?? answers[0]
-          });\n\t}`
-        ),
-      "utf8"
-    );
+    // @ts-expect-error Apparently `recursive` is not a valid option in bun types
+    const filenames = await fs.readdir(dirname, { recursive: true });
+    for (const filename of filenames) {
+      const source = path.join(dirname, filename);
+      if (filename !== "__config.json" && (await fs.stat(source)).isFile()) {
+        await this.applyPatchesToFile(source, patches);
+        await this.removeCommentsFromFile(source);
+      }
+    }
 
     return dirname;
   }
