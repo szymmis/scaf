@@ -1,5 +1,7 @@
 import fs from "fs/promises";
 
+await fs.rm("dist", { recursive: true, force: true });
+
 const output = await Bun.build({
   entrypoints: ["src/bin/index.ts"],
   outdir: "dist",
