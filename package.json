@@ -1,6 +1,11 @@
 {
   "name": "@szymmis/scaf",
+  "description": "A simple tool for scaffolding Advent of Code tasks",
   "version": "0.1.0",
+  "author": "szymmis",
+  "repository": "https://github.com/szymmis/scaf",
+  "private": false,
+  "license": "MIT",
   "module": "index.ts",
   "type": "module",
   "bin": {
@@ -25,5 +30,12 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "keywords": [
+    "Advent of Code",
+    "advent-of-code",
+    "aoc",
+    "scaffolding",
+    "cli"
+  ]
 }
