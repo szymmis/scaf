@@ -62,6 +62,32 @@ export class Scaffolder {
     }
   }
 
+  private static async getGitIgnoreEntries(dirname: string) {
+    const gitIgnoreFilePath = path.join(dirname, ".gitignore");
+
+    try {
+      return (await fs.readFile(gitIgnoreFilePath, "utf8"))
+        .split("\n")
+        .map((entry) => entry.trim())
+        .filter((entry) => entry);
+    } catch {
+      return [];
+    }
+  }
+
+  private static async getPatchableFiles(dirname: string) {
+    const filenames = await fs.readdir(dirname, { recursive: true });
+    const gitIgnoredFiles = await this.getGitIgnoreEntries(dirname);
+
+    return Promise.all(
+      filenames.filter(
+        async (filename) =>
+          !gitIgnoredFiles.some((entry) => filename.includes(entry)) &&
+          (await fs.stat(path.join(dirname, filename))).isFile()
+      )
+    );
+  }
+
   private static async copyTemplate(
     template: string,
     dirname: string,
@@ -75,14 +101,11 @@ export class Scaffolder {
 
     await fs.mkdir(dirname, { recursive: true });
 
-    const filenames = await fs.readdir(templatePath, { recursive: true });
-    for (const filename of filenames) {
+    for (const filename of await this.getPatchableFiles(templatePath)) {
       const source = path.join(templatePath, filename);
       const destination = path.join(dirname, filename);
-      if (filename !== "__config.json" && (await fs.stat(source)).isFile()) {
-        await fs.cp(source, destination);
-        await this.applyPatchesToFile(destination, patches);
-      }
+      await fs.cp(source, destination);
+      await this.applyPatchesToFile(destination, patches);
     }
   }
 
@@ -121,13 +144,10 @@ export class Scaffolder {
 
     const patches = this.getPatches(year, day, "two", examples[1], answers[1]);
 
-    const filenames = await fs.readdir(dirname, { recursive: true });
-    for (const filename of filenames) {
+    for (const filename of await this.getPatchableFiles(dirname)) {
       const source = path.join(dirname, filename);
-      if (filename !== "__config.json" && (await fs.stat(source)).isFile()) {
-        await this.applyPatchesToFile(source, patches);
-        await this.removeCommentsFromFile(source);
-      }
+      await this.applyPatchesToFile(source, patches);
+      await this.removeCommentsFromFile(source);
     }
 
     return dirname;
