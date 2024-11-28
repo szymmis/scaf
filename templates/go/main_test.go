@@ -13,15 +13,13 @@ func TestPartOne(t *testing.T) {
 	}
 }
 
-/**scaf**
-func TestPartTwo(t *testing.T) {
- 	input := `{{INPUT_2}}`
- 	expected := {{ANSWER_2}} 
- 
- 	output := PartTwo(input)
- 
- 	if output != expected {
- 		t.Errorf("Output is %v, expeced %v", output, expected)
- 	}
-}
- **scaf**/
+//**scaf**|func TestPartTwo(t *testing.T) {
+//**scaf**|	input := `{{INPUT_2}}`
+//**scaf**|	expected := {{ANSWER_2}} 
+//**scaf**|
+//**scaf**|	output := PartTwo(input)
+//**scaf**|
+//**scaf**|	if output != expected {
+//**scaf**|		t.Errorf("Output is %v, expeced %v", output, expected)
+//**scaf**|	}
+//**scaf**|}
