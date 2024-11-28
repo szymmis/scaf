@@ -2,6 +2,11 @@
 
 > A simple tool for scaffolding Advent of Code tasks
 
+[![npm](https://img.shields.io/npm/v/@szymmis/scaf)](https://www.npmjs.org/package/@szymmis/scaf)
+[![downloads-per-week](https://img.shields.io/npm/dt/@szymmis/scaf?color=success)](https://www.npmjs.org/package/@szymmis/scaf)
+[![bundle-size](https://img.shields.io/bundlephobia/minzip/@szymmis/scaf)](https://www.npmjs.org/package/@szymmis/scaf)
+[![license](https://img.shields.io/npm/l/@szymmis/scaf?color=purple)](https://www.npmjs.org/package/@szymmis/scaf)
+
 ## 🤔 Why Scaf?
 
 [**Advent of Code**](https://adventofcode.com) is fun, but setting up tasks every day can be tedious. **scaf** simplifies this by automating the setup, letting you focus on solving puzzles. It does this by fetching task info directly from the website and creating a directory structure and files for the task, including the input data file. 
