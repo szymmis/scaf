@@ -5,7 +5,7 @@
   "bin": "./dist/index.js",
   "scripts": {
     "dev": "bun --watch src/bin/index.ts",
-    "build": "bun build src/bin/index.ts --target=bun --outdir=dist"
+    "build": "bun scripts/build.ts"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
@@ -13,6 +13,7 @@
     "open": "^9.1.0"
   },
   "devDependencies": {
+    "@types/node": "^22.10.1",
     "bun-types": "latest"
   },
   "peerDependencies": {

@@ -1,20 +1,21 @@
-const API_URL = `https://www.adventofcode.com/`;
+const API_URL = `https://adventofcode.com/`;
 
 export class Api {
   static getApiKey(): string {
-    const key = Bun.env["AOC_API_KEY"];
+    const key = process.env["AOC_API_KEY"];
     if (!key) throw new Error("AOC_API_KEY env var is missing!");
     return key;
   }
 
   private static async fetch(url: string) {
     const headers = new Headers();
-    headers.append("Cookie", `session=${this.getApiKey()}`);
+    headers.append("cookie", `session=${this.getApiKey()}`);
     const response = await fetch(url, { headers });
 
     if (!response.ok) {
       throw new HttpError(
-        `Failed to fetch ${url}: ${response.statusText}`,
+        `Failed to fetch ${url}: ${response.statusText}` +
+          (await response.text()),
         response.status
       );
     }

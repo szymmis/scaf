@@ -30,7 +30,10 @@ export default async function init(
     }
   } catch (e) {
     if (e instanceof HttpError) {
-      console.error(`Cannot fetch task ${taskId} from Advent of Code`);
+      console.error(
+        `Cannot fetch task ${taskId} from Advent of Code`,
+        e.message
+      );
     } else {
       throw e;
     }

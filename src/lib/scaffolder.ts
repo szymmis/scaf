@@ -4,6 +4,8 @@ import { Cache } from "./cache";
 
 type Patches = Record<string, string | number>;
 
+const TEMPLATE_DIR = path.join(import.meta.dirname, "../templates");
+
 export class Scaffolder {
   private static getDirName(year: number, day: number): string {
     if (new Date().getFullYear() === year) {
@@ -50,19 +52,27 @@ export class Scaffolder {
     );
   }
 
+  private static async directoryExists(dirname: string): Promise<boolean> {
+    try {
+      return (await fs.stat(dirname)).isDirectory();
+    } catch {
+      return false;
+    }
+  }
+
   private static async copyTemplate(
     template: string,
     dirname: string,
     patches: Patches
   ) {
-    const templatePath = path.join(import.meta.dir, `../templates/${template}`);
+    const templatePath = path.join(TEMPLATE_DIR, template);
 
-    if (!(await fs.exists(templatePath))) {
+    if (!(await this.directoryExists(templatePath))) {
       throw new Error(`Template ${template} doesn't exist!`);
     }
+
     await fs.mkdir(dirname, { recursive: true });
 
-    // @ts-expect-error Apparently `recursive` is not a valid option in bun types
     const filenames = await fs.readdir(templatePath, { recursive: true });
     for (const filename of filenames) {
       const source = path.join(templatePath, filename);
@@ -83,7 +93,7 @@ export class Scaffolder {
   ): Promise<string | null> {
     const dirname = this.getDirName(year, day);
 
-    if (await fs.exists(dirname)) return dirname;
+    if (await this.directoryExists(dirname)) return dirname;
 
     const patches = this.getPatches(year, day, "one", examples[0], answers[0]);
     await this.copyTemplate(template, dirname, patches);
@@ -103,12 +113,12 @@ export class Scaffolder {
   ) {
     const dirname = this.getDirName(year, day);
 
-    if (!(await fs.exists(dirname)))
+    if (!this.directoryExists(dirname)) {
       throw new Error(`Directory of task ${year}/${day} doesn't exist!`);
+    }
 
     const patches = this.getPatches(year, day, "two", examples[1], answers[1]);
 
-    // @ts-expect-error Apparently `recursive` is not a valid option in bun types
     const filenames = await fs.readdir(dirname, { recursive: true });
     for (const filename of filenames) {
       const source = path.join(dirname, filename);
