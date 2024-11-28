@@ -22,4 +22,4 @@ await fs.writeFile(
   "utf-8"
 );
 
-await fs.cp("src/templates", "dist/templates", { recursive: true });
+await fs.cp("templates", "dist/templates", { recursive: true });

@@ -10,7 +10,7 @@
 ## 🤔 Why Scaf?
 
 [**Advent of Code**](https://adventofcode.com) is fun, but setting up tasks every day can be tedious. **scaf** simplifies this by automating the setup, letting you focus on solving puzzles. It does this by fetching task info directly from the website and creating a directory structure and files for the task, including the input data file. 
-You can select from [multiple languages](./src/templates/), as long as there is a template for that.
+You can select from [multiple languages](./templates/), as long as there is a template for that.
 
 ## 🚀 Usage
 

@@ -4,7 +4,7 @@ import { Cache } from "./cache";
 
 type Patches = Record<string, string | number>;
 
-const TEMPLATE_DIR = path.join(import.meta.dirname, "../templates");
+const TEMPLATE_DIR = path.join(import.meta.dirname, "../../templates");
 
 export class Scaffolder {
   private static getDirName(year: number, day: number): string {
