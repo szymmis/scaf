@@ -1,12 +1,18 @@
 {
-  "name": "scaf",
+  "name": "@szymmis/scaf",
   "version": "0.1.0",
   "module": "index.ts",
   "type": "module",
-  "bin": "./dist/index.js",
+  "bin": {
+    "scaf": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "bun --watch src/bin/index.ts",
-    "build": "bun scripts/build.ts"
+    "build": "bun scripts/build.ts",
+    "pack": "bun run build && npm pack"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
