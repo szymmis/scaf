@@ -47,7 +47,8 @@ export class Scaffolder {
       filepath,
       (await fs.readFile(filepath, "utf8"))
         .replaceAll("/**scaf**", "")
-        .replaceAll("**scaf**/", ""),
+        .replaceAll("**scaf**/", "")
+        .replaceAll("#**scaf**|", ""),
       "utf8"
     );
   }
