@@ -4,7 +4,6 @@
 
 [![npm](https://img.shields.io/npm/v/@szymmis/scaf)](https://www.npmjs.org/package/@szymmis/scaf)
 [![downloads-per-week](https://img.shields.io/npm/dt/@szymmis/scaf?color=success)](https://www.npmjs.org/package/@szymmis/scaf)
-[![bundle-size](https://img.shields.io/bundlephobia/minzip/@szymmis/scaf)](https://www.npmjs.org/package/@szymmis/scaf)
 [![license](https://img.shields.io/npm/l/@szymmis/scaf?color=purple)](https://www.npmjs.org/package/@szymmis/scaf)
 
 ## 🤔 Why Scaf?
