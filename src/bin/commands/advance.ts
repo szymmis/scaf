@@ -11,7 +11,8 @@ export default async function advance(
   options: { open: boolean }
 ) {
   const config = ConfigParser.parse();
-  const task = config.getTask(t.day, t.year);
+  const task =
+    config.getTaskByPath(process.cwd()) ?? config.getTask(t.day, t.year);
 
   if (!task) {
     throw new Error(`Task ${t.day}/${t.year} entry not found in .scafconfig`);

@@ -50,6 +50,19 @@ export class Config {
     );
   }
 
+  getTaskByPath(taskPath: string): Task | null {
+    for (const year in this._config) {
+      for (const day in this._config[year].tasks) {
+        const task = this.getTask(parseInt(day), parseInt(year));
+        if (task?.getPath() === taskPath) {
+          return task;
+        }
+      }
+    }
+
+    return null;
+  }
+
   setTask(task: Task) {
     if (!this._config[task.year])
       this._config[task.year] = { tasks: {}, dirname: String(task.year) };
