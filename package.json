@@ -32,8 +32,10 @@
     "typescript": "^5.0.0"
   },
   "keywords": [
-    "Advent of Code",
-    "advent-of-code",
+    "advent of code",
+    "advent",
+    "of",
+    "code",
     "aoc",
     "scaffolding",
     "cli"
