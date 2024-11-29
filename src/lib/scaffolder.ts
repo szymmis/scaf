@@ -1,4 +1,5 @@
 import fs from "fs/promises";
+import fsSync from "fs";
 import path from "path";
 import { Cache } from "./cache";
 import { Task } from "./task";
@@ -70,12 +71,10 @@ export class Scaffolder {
     const filenames = await fs.readdir(dirname, { recursive: true });
     const gitIgnoredFiles = await this.getGitIgnoreEntries(dirname);
 
-    return Promise.all(
-      filenames.filter(
-        async (filename) =>
-          !gitIgnoredFiles.some((entry) => filename.includes(entry)) &&
-          (await fs.stat(path.join(dirname, filename))).isFile()
-      )
+    return filenames.filter(
+      (filename) =>
+        !gitIgnoredFiles.some((entry) => filename.includes(entry)) &&
+        fsSync.statSync(path.join(dirname, filename)).isFile()
     );
   }
 
@@ -95,7 +94,7 @@ export class Scaffolder {
     for (const filename of await this.getPatchableFiles(templatePath)) {
       const source = path.join(templatePath, filename);
       const destination = path.join(dirname, filename);
-      await fs.cp(source, destination);
+      await fs.cp(source, destination, { recursive: true });
       await this.applyPatchesToFile(destination, patches);
     }
   }
