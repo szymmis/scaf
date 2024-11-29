@@ -1,28 +1,25 @@
 import fs from "fs/promises";
 import path from "path";
 import { Cache } from "./cache";
+import { Task } from "./task";
+import { Config, ConfigParser } from "./config";
 
 type Patches = Record<string, string | number>;
 
 const TEMPLATE_DIR = path.join(import.meta.dirname, "../../templates");
 
 export class Scaffolder {
-  private static getTaskDirPath(year: number, day: number): string {
-    return `${year}/${day.toString().padStart(2, "0")}`;
-  }
-
   private static getPatches(
-    year: number,
-    day: number,
-    task: "one" | "two",
+    task: Task,
+    part: "one" | "two",
     input: string,
     answer: string | number
   ): Patches {
     return {
-      DAY: day.toString().padStart(2, "0"),
-      YEAR: year.toString(),
-      [task === "one" ? "INPUT_1" : "INPUT_2"]: input,
-      [task === "one" ? "ANSWER_1" : "ANSWER_2"]: answer,
+      DAY: task.day.toString().padStart(2, "0"),
+      YEAR: task.year.toString(),
+      [part === "one" ? "INPUT_1" : "INPUT_2"]: input,
+      [part === "one" ? "ANSWER_1" : "ANSWER_2"]: answer,
     };
   }
 
@@ -104,43 +101,41 @@ export class Scaffolder {
   }
 
   static async initTask(
-    template: string,
-    year: number,
-    day: number,
+    config: Config,
+    task: Task,
     examples: string[],
     answers: (string | number)[]
   ): Promise<string | null> {
-    if (!(await this.directoryExists(`${year}`))) {
-      await fs.mkdir(`${year}`);
-    }
-
-    const dirname = this.getTaskDirPath(year, day);
-
+    const dirname = task.getPath();
     if (await this.directoryExists(dirname)) return dirname;
 
-    const patches = this.getPatches(year, day, "one", examples[0], answers[0]);
-    await this.copyTemplate(template, dirname, patches);
+    const patches = this.getPatches(task, "one", examples[0], answers[0]);
+    await this.copyTemplate(task.template, dirname, patches);
     await fs.writeFile(
       path.join(dirname, "input.txt"),
-      await Cache.loadTaskInput(year, day)
+      await Cache.loadTaskInput(task)
     );
+
+    config.setTask(task);
+    ConfigParser.write(config);
 
     return dirname;
   }
 
   static async advanceTask(
-    year: number,
-    day: number,
+    task: Task,
     examples: string[],
     answers: (string | number)[]
   ) {
-    const dirname = this.getTaskDirPath(year, day);
+    const dirname = task.getPath();
 
     if (!this.directoryExists(dirname)) {
-      throw new Error(`Directory of task ${year}/${day} doesn't exist!`);
+      throw new Error(
+        `Directory of task ${task.year}/${task.day} doesn't exist!`
+      );
     }
 
-    const patches = this.getPatches(year, day, "two", examples[1], answers[1]);
+    const patches = this.getPatches(task, "two", examples[1], answers[1]);
 
     for (const filename of await this.getPatchableFiles(dirname)) {
       const source = path.join(dirname, filename);

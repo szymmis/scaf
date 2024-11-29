@@ -3,6 +3,7 @@ import path from "path";
 import { log } from "./logger";
 import { Formatter } from "./formatter";
 import { Api } from "./api";
+import { Task } from "./task";
 
 const CACHE_DIRNAME = ".cache";
 
@@ -30,27 +31,27 @@ export class Cache {
     log(`${fileName} saved to cache`);
   }
 
-  static async loadTask(year: number, day: number, force?: boolean) {
-    const fileName = `${Formatter.getTaskFileName(year, day)}.html`;
+  static async loadTask(task: Task, force?: boolean) {
+    const fileName = `${Formatter.getTaskFileName(task.year, task.day)}.html`;
 
     if (!force && this.exists(fileName)) {
       return this.load(fileName) as string;
     }
 
-    const puzzle = await Api.fetchPuzzle(year, day);
+    const puzzle = await Api.fetchPuzzle(task.year, task.day);
     Cache.save(fileName, puzzle);
 
     return puzzle;
   }
 
-  static async loadTaskInput(year: number, day: number, force?: boolean) {
-    const fileName = `${Formatter.getTaskFileName(year, day)}.txt`;
+  static async loadTaskInput(task: Task, force?: boolean) {
+    const fileName = `${Formatter.getTaskFileName(task.year, task.day)}.txt`;
 
     if (!force && this.exists(fileName)) {
       return this.load(fileName) as string;
     }
 
-    const puzzle = await Api.fetchPuzzleInput(year, day);
+    const puzzle = await Api.fetchPuzzleInput(task.year, task.day);
     Cache.save(fileName, puzzle);
 
     return puzzle;

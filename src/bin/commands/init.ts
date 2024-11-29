@@ -4,35 +4,43 @@ import { Api, HttpError } from "../../lib/api";
 import { Cache } from "../../lib/cache";
 import { Parser } from "../../lib/parser";
 import { Scaffolder } from "../../lib/scaffolder";
+import { ConfigParser } from "../../lib/config";
+import { Task } from "../../lib/task";
+import path from "path";
 
 export default async function init(
-  task: { day: number; year: number },
+  t: { day: number; year: number },
   options: { lang: string; open: boolean }
 ) {
-  const { day, year } = task;
+  const config = ConfigParser.parse();
 
   try {
-    await Cache.loadTaskInput(year, day);
-    const { examples, answers } = await Parser.parseTask(
-      await Cache.loadTask(year, day, false)
+    const task = new Task(
+      t.day,
+      t.year,
+      options.lang,
+      path.join(
+        config.getRoot(),
+        String(t.year),
+        String(t.day).padStart(2, "0")
+      )
     );
 
-    const output = await Scaffolder.initTask(
-      options.lang,
-      year,
-      day,
-      examples,
-      answers
+    await Cache.loadTaskInput(task);
+    const { examples, answers } = await Parser.parseTask(
+      await Cache.loadTask(task, false)
     );
+
+    const output = await Scaffolder.initTask(config, task, examples, answers);
 
     if (options.open) {
       execSync(`code ${output}`);
-      open(Api.getTaskURL(year, day));
+      open(Api.getTaskURL(task.year, task.day));
     }
   } catch (e) {
     if (e instanceof HttpError) {
       console.error(
-        `Cannot fetch task ${day}/${year} from Advent of Code`,
+        `Cannot fetch task ${t.day}/${t.year} from Advent of Code`,
         e.message
       );
     } else {
