@@ -65,7 +65,7 @@ export class Config {
 }
 
 export class ConfigParser {
-  private getConfigPath() {
+  private getConfigPath(): string | null {
     let currentPath = process.cwd();
 
     while (currentPath !== path.join(currentPath, "..")) {
@@ -74,13 +74,18 @@ export class ConfigParser {
       currentPath = path.join(currentPath, "..");
     }
 
-    throw new Error("No .scafconfig found in any of the parent directories!");
+    return null;
   }
 
   static parse(): Config {
-    const configPath = new ConfigParser().getConfigPath();
-    const data = fs.readFileSync(configPath, "utf-8");
-    return new Config(configPath, ConfigSchema.parse(toml.parse(data)));
+    const cfgPath = new ConfigParser().getConfigPath();
+
+    if (!cfgPath) {
+      return new Config(path.join(process.cwd(), ".scafconfig"), {});
+    }
+
+    const data = fs.readFileSync(cfgPath, "utf-8");
+    return new Config(cfgPath, ConfigSchema.parse(toml.parse(data)));
   }
 
   static write(config: Config) {
