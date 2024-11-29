@@ -7,12 +7,8 @@ type Patches = Record<string, string | number>;
 const TEMPLATE_DIR = path.join(import.meta.dirname, "../../templates");
 
 export class Scaffolder {
-  private static getDirName(year: number, day: number): string {
-    if (new Date().getFullYear() === year) {
-      return `${day.toString().padStart(2, "0")}`;
-    } else {
-      return `${year}_${day.toString().padStart(2, "0")}`;
-    }
+  private static getTaskDirPath(year: number, day: number): string {
+    return `${year}/${day.toString().padStart(2, "0")}`;
   }
 
   private static getPatches(
@@ -114,7 +110,11 @@ export class Scaffolder {
     examples: string[],
     answers: (string | number)[]
   ): Promise<string | null> {
-    const dirname = this.getDirName(year, day);
+    if (!(await this.directoryExists(`${year}`))) {
+      await fs.mkdir(`${year}`);
+    }
+
+    const dirname = this.getTaskDirPath(year, day);
 
     if (await this.directoryExists(dirname)) return dirname;
 
@@ -134,7 +134,7 @@ export class Scaffolder {
     examples: string[],
     answers: (string | number)[]
   ) {
-    const dirname = this.getDirName(year, day);
+    const dirname = this.getTaskDirPath(year, day);
 
     if (!this.directoryExists(dirname)) {
       throw new Error(`Directory of task ${year}/${day} doesn't exist!`);
