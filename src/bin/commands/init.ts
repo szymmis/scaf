@@ -6,18 +6,19 @@ import { Parser } from "../../lib/parser";
 import { Scaffolder } from "../../lib/scaffolder";
 
 export default async function init(
-  lang: string,
-  taskId: string,
-  options: { open: boolean }
+  task: { day: number; year: number },
+  options: { lang: string; open: boolean }
 ) {
-  const [year, day] = taskId.split("/").map(Number);
+  const { day, year } = task;
+
   try {
-    const task = await Cache.loadTask(year, day, false);
     await Cache.loadTaskInput(year, day);
-    const { examples, answers } = await Parser.parseTask(task);
+    const { examples, answers } = await Parser.parseTask(
+      await Cache.loadTask(year, day, false)
+    );
 
     const output = await Scaffolder.initTask(
-      lang,
+      options.lang,
       year,
       day,
       examples,
@@ -31,7 +32,7 @@ export default async function init(
   } catch (e) {
     if (e instanceof HttpError) {
       console.error(
-        `Cannot fetch task ${taskId} from Advent of Code`,
+        `Cannot fetch task ${day}/${year} from Advent of Code`,
         e.message
       );
     } else {

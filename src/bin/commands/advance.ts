@@ -6,10 +6,11 @@ import { Parser } from "../../lib/parser";
 import { Scaffolder } from "../../lib/scaffolder";
 
 export default async function advance(
-  taskId: string,
+  task: { day: number; year: number },
   options: { open: boolean }
 ) {
-  const [year, day] = taskId.split("/").map(Number);
+  const { day, year } = task;
+
   try {
     const task = await Cache.loadTask(year, day, false);
     await Cache.loadTaskInput(year, day);
@@ -27,7 +28,7 @@ export default async function advance(
     }
   } catch (e) {
     if (e instanceof HttpError) {
-      console.error(`Cannot fetch task ${taskId} from Advent of Code`);
+      console.error(`Cannot fetch task ${day}/${year} from Advent of Code`);
     } else {
       throw e;
     }
