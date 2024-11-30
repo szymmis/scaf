@@ -1,7 +1,7 @@
 {
-  "name": "{{DAY}}/{{YEAR}}",
+  "name": "{{DAY}}_{{YEAR}}",
   "scripts": {
-    "start": "tsx src/index.ts",
+    "start": "tsx main.ts",
     "test": "vitest"
   },
   "devDependencies": {

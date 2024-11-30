@@ -7,7 +7,7 @@ import { Config, ConfigParser } from "./config";
 
 type Patches = Record<string, string | number>;
 
-const TEMPLATE_DIR = path.join(import.meta.dirname, "../../templates");
+export const TEMPLATE_DIR = path.join(import.meta.dirname, "../../templates");
 
 export class Scaffolder {
   private static getPatches(
@@ -69,11 +69,14 @@ export class Scaffolder {
 
   private static async getPatchableFiles(dirname: string) {
     const filenames = await fs.readdir(dirname, { recursive: true });
-    const gitIgnoredFiles = await this.getGitIgnoreEntries(dirname);
+    const ignoredFiles = [
+      ...(await this.getGitIgnoreEntries(dirname)),
+      ".template",
+    ];
 
     return filenames.filter(
       (filename) =>
-        !gitIgnoredFiles.some((entry) => filename.includes(entry)) &&
+        !ignoredFiles.some((entry) => filename.includes(entry)) &&
         fsSync.statSync(path.join(dirname, filename)).isFile()
     );
   }
@@ -109,7 +112,7 @@ export class Scaffolder {
     if (await this.directoryExists(dirname)) return dirname;
 
     const patches = this.getPatches(task, "one", examples[0], answers[0]);
-    await this.copyTemplate(task.template, dirname, patches);
+    await this.copyTemplate(task.template.lang, dirname, patches);
     await fs.writeFile(
       path.join(dirname, "input.txt"),
       await Cache.loadTaskInput(task)

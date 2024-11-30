@@ -14,6 +14,6 @@ function main() {
   //**scaf**|console.log("Part Two:", partTwo(input));
 }
 
-if (import.meta.main) {
+if (require.main === module) {
   main();
 }

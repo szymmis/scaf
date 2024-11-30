@@ -68,7 +68,7 @@ export class Config {
       this._config[task.year] = { tasks: {}, dirname: String(task.year) };
 
     this._config[task.year].tasks[`${task.day}`.padStart(2, "0")] = {
-      lang: task.template,
+      lang: task.template.lang,
       dirname: path.relative(
         path.join(this.getRoot(), this._config[task.year].dirname),
         task.getPath()
