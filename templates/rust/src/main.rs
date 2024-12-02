@@ -1,14 +1,19 @@
 fn main() {
-    let input = std::fs::read_to_string("input.txt").unwrap();
+    let input: Vec<&str> = std::fs::read_to_string("input.txt")
+    .unwrap()
+    .trim()
+    .lines()
+    .collect();
+
     println!("Part One: {}", part_one(&input));
     //**scaf**|println!("Part Two: {}", part_two(&input));
 }
 
-fn part_one(input: &str) -> i32 {
+fn part_one(input: &Vec<&str>) -> i32 {
     -1
 }
 
-//**scaf**|fn part_two(input: &str) -> i32 {
+//**scaf**|fn part_two(input: &Vec<&str>) -> i32 {
 //**scaf**|    -1
 //**scaf**|}
 

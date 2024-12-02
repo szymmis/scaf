@@ -1,15 +1,15 @@
 import fs from "fs";
 
-export function partOne(input: string): number {
+export function partOne(input: string[]): number {
   return -1;
 }
 
-//**scaf**|export function partTwo(input: string): number {
+//**scaf**|export function partTwo(input: string[]): number {
 //**scaf**|  return -1;
 //**scaf**|}
 
 function main() {
-  const input = fs.readFileSync("input.txt", "utf-8");
+  const input = fs.readFileSync("input.txt", "utf-8").trim().split("\n");
   console.log("Part One:", partOne(input));
   //**scaf**|console.log("Part Two:", partTwo(input));
 }

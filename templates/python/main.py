@@ -1,5 +1,5 @@
 def main():
-    input = open("input.txt").read()
+    input = open("input.txt").read().strip().splitlines()
 
     print("Part One:", part_one(input))
     #**scaf**|print("Part Two:", part_two(input))
