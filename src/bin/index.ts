@@ -1,5 +1,6 @@
 import { program, Argument } from "commander";
 
+import { version } from "../../package.json";
 import init from "./commands/init";
 import advance from "./commands/advance";
 import { Parsers } from "./parsers";
@@ -43,4 +44,4 @@ program
   .description("run task's tests")
   .action(test);
 
-program.parse();
+program.version(version).parse();
