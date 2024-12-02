@@ -96,7 +96,10 @@ export class Scaffolder {
 
     for (const filename of await this.getPatchableFiles(templatePath)) {
       const source = path.join(templatePath, filename);
-      const destination = path.join(dirname, filename);
+      const destination = path.join(
+        dirname,
+        filename.startsWith("_") ? filename.replace("_", ".") : filename
+      );
       await fs.cp(source, destination, { recursive: true });
       await this.applyPatchesToFile(destination, patches);
     }
