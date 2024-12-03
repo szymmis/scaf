@@ -7,9 +7,10 @@ import { Task } from "./task";
 import { Config, ConfigParser } from "./config";
 
 export class Cache {
-  private static config: Config = ConfigParser.parse();
+  private static config: Config | undefined;
 
   private static getCacheDirPath() {
+    if (!this.config) this.config = ConfigParser.parse();
     return path.join(this.config.getRoot(), ".cache");
   }
 
