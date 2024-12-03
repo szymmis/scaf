@@ -23,13 +23,13 @@ mod tests {
 
     #[test]
     fn part_one_example() {
-        let input = "{{INPUT_1}}";
+        let input = "{{INPUT_1}}".lines().collect::<Vec<&str>>();
         assert_eq!(part_one(input), {{ANSWER_1}});
     }
 
     //**scaf**|#[test]
     //**scaf**|fn part_two_example() {
-    //**scaf**|    let input = "{{INPUT_2}}";
+    //**scaf**|    let input = "{{INPUT_2}}".lines().collect::<Vec<&str>>();
     //**scaf**|    assert_eq!(part_two(input), {{ANSWER_2}});
     //**scaf**|}
 }

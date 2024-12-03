@@ -1,9 +1,12 @@
 package main
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestPartOne(t *testing.T) {
-	input := `{{INPUT_1}}`
+	input := strings.Split(`{{INPUT_1}}`, "\n")
 	expected := {{ANSWER_1}}
 
 	output := PartOne(input)
@@ -14,7 +17,7 @@ func TestPartOne(t *testing.T) {
 }
 
 //**scaf**|func TestPartTwo(t *testing.T) {
-//**scaf**|	input := `{{INPUT_2}}`
+//**scaf**|	input := strings.Split(`{{INPUT_2}}`, "\n")
 //**scaf**|	expected := {{ANSWER_2}} 
 //**scaf**|
 //**scaf**|	output := PartTwo(input)
