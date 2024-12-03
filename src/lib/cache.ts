@@ -4,20 +4,29 @@ import { log } from "./logger";
 import { Formatter } from "./formatter";
 import { Api } from "./api";
 import { Task } from "./task";
-
-const CACHE_DIRNAME = ".cache";
+import { Config, ConfigParser } from "./config";
 
 export class Cache {
+  private static config: Config = ConfigParser.parse();
+
+  private static getCacheDirPath() {
+    return path.join(this.config.getRoot(), ".cache");
+  }
+
   private static exists(fileName: string): boolean {
-    if (!fs.existsSync(CACHE_DIRNAME)) fs.mkdirSync(CACHE_DIRNAME);
-    const filePath = path.join(CACHE_DIRNAME, fileName);
+    const cachePath = this.getCacheDirPath();
+    if (!fs.existsSync(cachePath)) fs.mkdirSync(cachePath);
+    const filePath = path.join(cachePath, fileName);
     return fs.existsSync(filePath);
   }
 
   private static load(fileName: string): string | undefined {
     if (this.exists(fileName)) {
       log(`Reading ${fileName} from cache.`);
-      return fs.readFileSync(path.join(CACHE_DIRNAME, fileName), "utf8");
+      return fs.readFileSync(
+        path.join(this.getCacheDirPath(), fileName),
+        "utf8"
+      );
     } else {
       log(`${fileName} not found in cache.`);
       return undefined;
@@ -25,7 +34,7 @@ export class Cache {
   }
 
   private static save(fileName: string, data: string) {
-    const filePath = path.join(CACHE_DIRNAME, fileName);
+    const filePath = path.join(this.getCacheDirPath(), fileName);
 
     fs.writeFileSync(filePath, data, "utf8");
     log(`${fileName} saved to cache`);

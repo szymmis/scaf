@@ -21,7 +21,7 @@ export default async function advance(
   try {
     await Cache.loadTaskInput(task);
     const { examples, answers, hasPartTwo } = await Parser.parseTask(
-      await Cache.loadTask(task, false)
+      await Cache.loadTask(task, true)
     );
 
     if (!hasPartTwo) {
