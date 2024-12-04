@@ -140,7 +140,12 @@ export class Scaffolder {
       );
     }
 
-    const patches = this.getPatches(task, "two", examples[1], answers[1]);
+    const patches = this.getPatches(
+      task,
+      "two",
+      examples[1] ?? examples[0],
+      answers[1]
+    );
 
     for (const filename of await this.getPatchableFiles(dirname)) {
       const source = path.join(dirname, filename);
