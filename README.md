@@ -8,7 +8,7 @@
 
 ## 🤔 Why Scaf?
 
-[**Advent of Code**](https://adventofcode.com) is fun, but setting up tasks every day can be tedious. **scaf** simplifies this by automating the setup, letting you focus on solving puzzles. It does this by fetching task info directly from the website and creating a directory structure and files for the task, including the input data file. 
+[**Advent of Code**](https://adventofcode.com) is fun, but setting up tasks every day can be tedious. **scaf** simplifies this by automating the setup, letting you focus on solving puzzles. It does this by fetching task info directly from the website and creating a directory structure and files for the task, including the input data file.
 You can select from [multiple languages](./templates/), as long as there is a template for that.
 
 ## 🚀 Usage
@@ -21,11 +21,11 @@ Install **scaf** globally using npm to make it accessible as a CLI tool:
 npm install -g @szymmis/scaf
 ```
 
-### Setting AoC API key
+### Authorizing into the AoC
 
 - Go to the [Advent of Code](https://adventofcode.com/auth/login) website and login
 - Open browser devtools and copy `session` cookie value
-- Set env variable `AOC_API_KEY=<value>` in your shell
+- Use `scaf login` command or setup the env variable `SCAF_TOKEN=<value>` in your shell
 
 ### Scaffolding a task
 

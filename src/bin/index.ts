@@ -6,6 +6,7 @@ import advance from "./commands/advance";
 import { Parsers } from "./parsers";
 import run from "./commands/run";
 import test from "./commands/test";
+import login from "./commands/login";
 
 const taskArgument = new Argument(
   "[task]",
@@ -16,6 +17,11 @@ const taskArgument = new Argument(
     { day: new Date().getDate(), year: new Date().getFullYear() },
     "today"
   );
+
+program
+  .command("login")
+  .description("setup token to authorize into the AoC account")
+  .action(login);
 
 program
   .command("init")
@@ -29,7 +35,7 @@ program
   .command("advance")
   .addArgument(taskArgument)
   .option("--open", "Open task in browser", false)
-  .description("advance task to second part if first answer is submitted")
+  .description("advance task to second part if first part is submitted")
   .action(advance);
 
 program
@@ -41,7 +47,7 @@ program
 program
   .command("test")
   .addArgument(taskArgument)
-  .description("run task's tests")
+  .description("run tests for the task")
   .action(test);
 
 program.version(version).parse();

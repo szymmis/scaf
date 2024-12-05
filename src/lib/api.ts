@@ -1,15 +1,30 @@
+import { Colors } from "./colors";
+import { Logger } from "./logger";
+import { TokenManager } from "./token";
+
 const API_URL = `https://adventofcode.com/`;
 
 export class Api {
-  static getApiKey(): string {
-    const key = process.env["AOC_API_KEY"];
-    if (!key) throw new Error("AOC_API_KEY env var is missing!");
+  static async getApiKey() {
+    const key = await TokenManager.getToken();
+    if (!key) {
+      Logger.panic(
+        "Unable to read the token.",
+        `Use ${Colors.paint(
+          Colors.Yellow,
+          "scaf login"
+        )} to authorize or setup ${Colors.paint(
+          Colors.Yellow,
+          TokenManager.TOKEN_ENV
+        )} env variable.`
+      );
+    }
     return key;
   }
 
   private static async fetch(url: string) {
     const headers = new Headers();
-    headers.append("cookie", `session=${this.getApiKey()}`);
+    headers.append("cookie", `session=${await this.getApiKey()}`);
     const response = await fetch(url, { headers });
 
     if (!response.ok) {
