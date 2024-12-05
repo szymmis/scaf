@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
-import { log } from "./logger";
 import { Formatter } from "./formatter";
 import { Api } from "./api";
 import { Task } from "./task";
 import { Config, ConfigParser } from "./config";
+import { Logger } from "./logger";
 
 export class Cache {
   private static config: Config | undefined;
@@ -23,13 +23,13 @@ export class Cache {
 
   private static load(fileName: string): string | undefined {
     if (this.exists(fileName)) {
-      log(`Reading ${fileName} from cache.`);
+      Logger.info(`Reading ${fileName} from cache.`);
       return fs.readFileSync(
         path.join(this.getCacheDirPath(), fileName),
         "utf8"
       );
     } else {
-      log(`${fileName} not found in cache.`);
+      Logger.info(`${fileName} not found in cache.`);
       return undefined;
     }
   }
@@ -38,7 +38,7 @@ export class Cache {
     const filePath = path.join(this.getCacheDirPath(), fileName);
 
     fs.writeFileSync(filePath, data, "utf8");
-    log(`${fileName} saved to cache`);
+    Logger.info(`${fileName} saved to cache.`);
   }
 
   static async loadTask(task: Task, force?: boolean) {

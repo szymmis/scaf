@@ -1,4 +1,3 @@
-import { execSync } from "child_process";
 import open from "open";
 import { Api, HttpError } from "../../lib/api";
 import { Cache } from "../../lib/cache";
@@ -8,6 +7,7 @@ import { ConfigParser } from "../../lib/config";
 import { Task } from "../../lib/task";
 import path from "path";
 import { Logger } from "../../lib/logger";
+import { TaskAlreadyExistsError } from "../../lib/errors";
 
 export default async function init(
   t: { day: number; year: number },
@@ -32,18 +32,22 @@ export default async function init(
       await Cache.loadTask(task, false)
     );
 
-    const output = await Scaffolder.initTask(config, task, examples, answers);
+    await Scaffolder.initTask(config, task, examples, answers);
 
     if (options.open) {
-      execSync(`code ${output}`);
+      Logger.log(`Opening task ${t.day}/${t.year} in browser...`);
       open(Api.getTaskURL(task.year, task.day));
     }
+
+    Logger.success(`Task ${t.day}/${t.year} initialized successfully.`);
   } catch (e) {
     if (e instanceof HttpError) {
       Logger.panic(
         `Cannot fetch task ${t.day}/${t.year} from Advent of Code`,
         "You might have found a bug. Try again later or report it."
       );
+    } else if (e instanceof TaskAlreadyExistsError) {
+      Logger.log(`Task ${t.day}/${t.year} already exists.`);
     } else {
       throw e;
     }

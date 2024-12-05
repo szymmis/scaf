@@ -54,8 +54,13 @@ program
   .action(test);
 
 try {
+  process.on("unhandledRejection", handleError);
   program.version(version).parse();
 } catch (e) {
+  handleError(e);
+}
+
+function handleError(e: unknown) {
   if (e instanceof MissingTaskError) {
     Logger.panic(
       `Task ${e.day}/${e.year} not found in .scafconfig`,

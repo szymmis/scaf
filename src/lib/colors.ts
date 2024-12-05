@@ -9,13 +9,21 @@ export class Colors {
   static White = 37;
   static Gray = 90;
 
-  static paint(color: number, message: string) {
+  static paint(color: number, message: string | number) {
     return process.stdout.isTTY || process.env.FORCE_COLOR
       ? `\u001b[${[color]}m${message}\u001b[0m`
-      : message;
+      : String(message);
+  }
+
+  static green(message: string | number) {
+    return this.paint(this.Green, message);
   }
 
   static yellow(message: string | number) {
     return this.paint(this.Yellow, message);
+  }
+
+  static gray(message: string | number) {
+    return this.paint(this.Gray, message);
   }
 }

@@ -1,4 +1,3 @@
-import { execSync } from "child_process";
 import open from "open";
 import { Api } from "../../lib/api";
 import { Cache } from "../../lib/cache";
@@ -31,10 +30,11 @@ export default async function advance(
     );
   }
 
-  const output = await Scaffolder.advanceTask(task, examples, answers);
+  await Scaffolder.advanceTask(task, examples, answers);
 
   if (options.open) {
-    execSync(`code ${output}`);
     open(Api.getTaskURL(task.year, task.day));
   }
+
+  Logger.success(`Task ${t.day}/${t.year} advanced successfully.`);
 }

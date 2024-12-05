@@ -5,7 +5,7 @@ import { Cache } from "./cache";
 import { Task } from "./task";
 import { Config, ConfigParser } from "./config";
 import { Logger } from "./logger";
-import { MissingTaskError } from "./errors";
+import { MissingTaskError, TaskAlreadyExistsError } from "./errors";
 
 type Patches = Record<string, string | number>;
 
@@ -114,7 +114,8 @@ export class Scaffolder {
     answers: (string | number)[]
   ): Promise<string | null> {
     const dirname = task.getPath();
-    if (await this.directoryExists(dirname)) return dirname;
+    if (await this.directoryExists(dirname))
+      throw new TaskAlreadyExistsError(task.day, task.year);
 
     const patches = this.getPatches(task, "one", examples[0], answers[0]);
     await this.copyTemplate(task.template.lang, dirname, patches);

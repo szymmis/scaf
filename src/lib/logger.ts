@@ -1,8 +1,16 @@
 import { Colors } from "./colors";
 
 export class Logger {
+  static info(msg: string) {
+    console.log(`${Colors.gray("info: " + msg)}`);
+  }
+
   static log(msg: string) {
-    console.log(`[LOG] ${msg}`);
+    console.log(`${msg}`);
+  }
+
+  static success(msg: string) {
+    console.log(`${Colors.green(msg)}`);
   }
 
   static panic(msg: string, hint?: string) {
@@ -13,8 +21,4 @@ export class Logger {
     );
     process.exit(1);
   }
-}
-
-export function log(msg: string) {
-  console.log(`[LOG] ${msg}`);
 }
