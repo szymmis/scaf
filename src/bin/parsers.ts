@@ -36,7 +36,7 @@ function parseTaskNumber(task: string) {
   if (day < 1 || day > 25) {
     Logger.panic(
       `${day} is an invalid day.`,
-      `Advent lasts from ${Colors.yellow("1st")} and ${Colors.yellow(
+      `Advent lasts from ${Colors.yellow("1st")} to ${Colors.yellow(
         "25th"
       )} December.`
     );
