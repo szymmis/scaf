@@ -7,6 +7,7 @@ import { Scaffolder } from "../../lib/scaffolder";
 import { ConfigParser } from "../../lib/config";
 import { Task } from "../../lib/task";
 import path from "path";
+import { Logger } from "../../lib/logger";
 
 export default async function init(
   t: { day: number; year: number },
@@ -39,9 +40,9 @@ export default async function init(
     }
   } catch (e) {
     if (e instanceof HttpError) {
-      console.error(
+      Logger.panic(
         `Cannot fetch task ${t.day}/${t.year} from Advent of Code`,
-        e.message
+        "You might have found a bug. Try again later or report it."
       );
     } else {
       throw e;

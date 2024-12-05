@@ -4,6 +4,8 @@ import path from "path";
 import { Cache } from "./cache";
 import { Task } from "./task";
 import { Config, ConfigParser } from "./config";
+import { Logger } from "./logger";
+import { MissingTaskError } from "./errors";
 
 type Patches = Record<string, string | number>;
 
@@ -89,7 +91,7 @@ export class Scaffolder {
     const templatePath = path.join(TEMPLATE_DIR, template);
 
     if (!(await this.directoryExists(templatePath))) {
-      throw new Error(`Template ${template} doesn't exist!`);
+      return Logger.panic(`Template ${template} doesn't exist`);
     }
 
     await fs.mkdir(dirname, { recursive: true });
@@ -135,9 +137,7 @@ export class Scaffolder {
     const dirname = task.getPath();
 
     if (!this.directoryExists(dirname)) {
-      throw new Error(
-        `Directory of task ${task.year}/${task.day} doesn't exist!`
-      );
+      throw new MissingTaskError(task.day, task.year);
     }
 
     const patches = this.getPatches(

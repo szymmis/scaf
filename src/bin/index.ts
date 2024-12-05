@@ -7,6 +7,9 @@ import { Parsers } from "./parsers";
 import run from "./commands/run";
 import test from "./commands/test";
 import login from "./commands/login";
+import { MissingTaskError } from "../lib/errors";
+import { Logger } from "../lib/logger";
+import { Colors } from "../lib/colors";
 
 const taskArgument = new Argument(
   "[task]",
@@ -50,4 +53,19 @@ program
   .description("run tests for the task")
   .action(test);
 
-program.version(version).parse();
+try {
+  program.version(version).parse();
+} catch (e) {
+  if (e instanceof MissingTaskError) {
+    Logger.panic(
+      `Task ${e.day}/${e.year} not found in .scafconfig`,
+      `Use ${Colors.yellow(
+        "scaf init"
+      )} to set it up or if the task exist, edit ${Colors.yellow(
+        ".scafconfig"
+      )} to link it.`
+    );
+  } else {
+    throw e;
+  }
+}

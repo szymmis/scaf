@@ -1,10 +1,13 @@
 import { execSync } from "child_process";
 import open from "open";
-import { Api, HttpError } from "../../lib/api";
+import { Api } from "../../lib/api";
 import { Cache } from "../../lib/cache";
 import { Parser } from "../../lib/parser";
 import { Scaffolder } from "../../lib/scaffolder";
 import { ConfigParser } from "../../lib/config";
+import { Logger } from "../../lib/logger";
+import { Colors } from "../../lib/colors";
+import { MissingTaskError } from "../../lib/errors";
 
 export default async function advance(
   t: { day: number; year: number },
@@ -14,33 +17,24 @@ export default async function advance(
   const task =
     config.getTaskByPath(process.cwd()) ?? config.getTask(t.day, t.year);
 
-  if (!task) {
-    throw new Error(`Task ${t.day}/${t.year} entry not found in .scafconfig`);
+  if (!task) throw new MissingTaskError(t.day, t.year);
+
+  await Cache.loadTaskInput(task);
+  const { examples, answers, hasPartTwo } = await Parser.parseTask(
+    await Cache.loadTask(task, true)
+  );
+
+  if (!hasPartTwo) {
+    return Logger.panic(
+      "Answer for part one is not submitted yet",
+      "You can do that through the AoC website."
+    );
   }
 
-  try {
-    await Cache.loadTaskInput(task);
-    const { examples, answers, hasPartTwo } = await Parser.parseTask(
-      await Cache.loadTask(task, true)
-    );
+  const output = await Scaffolder.advanceTask(task, examples, answers);
 
-    if (!hasPartTwo) {
-      throw new Error("You have not submited answer for part one yet!");
-    }
-
-    const output = await Scaffolder.advanceTask(task, examples, answers);
-
-    if (options.open) {
-      execSync(`code ${output}`);
-      open(Api.getTaskURL(task.year, task.day));
-    }
-  } catch (e) {
-    if (e instanceof HttpError) {
-      console.error(
-        `Cannot fetch task ${task.day}/${task.year} from Advent of Code`
-      );
-    } else {
-      throw e;
-    }
+  if (options.open) {
+    execSync(`code ${output}`);
+    open(Api.getTaskURL(task.year, task.day));
   }
 }

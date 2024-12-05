@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import toml from "smol-toml";
 import { TEMPLATE_DIR } from "./scaffolder";
+import { Logger } from "./logger";
 
 export class Template {
   lang: string;
@@ -25,7 +26,10 @@ export class Template {
     } catch (e) {
       if (e instanceof Error) {
         if (e.message.includes("No such file or directory")) {
-          throw new Error(`Template ${lang} does not have .template file.`);
+          Logger.panic(
+            `Template ${lang} does not have .template file`,
+            "Looks like the template is broken, report it."
+          );
         }
       }
       throw e;

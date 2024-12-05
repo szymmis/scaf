@@ -14,4 +14,8 @@ export class Colors {
       ? `\u001b[${[color]}m${message}\u001b[0m`
       : message;
   }
+
+  static yellow(message: string | number) {
+    return this.paint(this.Yellow, message);
+  }
 }

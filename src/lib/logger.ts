@@ -7,7 +7,7 @@ export class Logger {
 
   static panic(msg: string, hint?: string) {
     console.log(
-      `${Colors.paint(Colors.Red, msg)}\n${
+      `${Colors.paint(Colors.Red, "err: " + msg)}\n${
         hint ? `${Colors.paint(Colors.Gray, "Hint:")} ${hint}` : ""
       }`
     );
