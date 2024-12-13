@@ -1,5 +1,8 @@
 import { Colors } from "../lib/colors";
+import { ConfigParser } from "../lib/config";
+import { MissingTaskError, NoTaskInCwdError } from "../lib/errors";
 import { Logger } from "../lib/logger";
+import { Task } from "../lib/task";
 
 function parseTaskNumber(task: string) {
   if (task && !task.match(/^\d{1,2}(\/?(20)?\d{2})?$/)) {
@@ -52,6 +55,26 @@ function parseTaskNumber(task: string) {
   return { day, year };
 }
 
+function parseTask(params?: { day: number; year: number }) {
+  const config = ConfigParser.parse();
+
+  let task: Task | null = null;
+
+  if (!params) {
+    task = config.getTaskByPath(process.cwd());
+  } else {
+    task = config.getTask(params.day, params.year);
+  }
+
+  if (!task) {
+    if (params) throw new MissingTaskError(params.day, params.year);
+    else throw new NoTaskInCwdError();
+  }
+
+  return task;
+}
+
 export const Parsers = {
   parseTaskNumber,
+  parseTask,
 };

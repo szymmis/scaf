@@ -10,7 +10,10 @@ import { Logger } from "../../lib/logger";
 import { TaskAlreadyExistsError } from "../../lib/errors";
 
 export default async function init(
-  t: { day: number; year: number },
+  t: {
+    day: number;
+    year: number;
+  },
   options: { lang: string; open: boolean }
 ) {
   const config = ConfigParser.parse();

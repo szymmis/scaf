@@ -7,20 +7,10 @@ import { Parsers } from "./parsers";
 import run from "./commands/run";
 import test from "./commands/test";
 import login from "./commands/login";
-import { MissingTaskError } from "../lib/errors";
+import { MissingTaskError, NoTaskInCwdError } from "../lib/errors";
 import { Logger } from "../lib/logger";
 import { Colors } from "../lib/colors";
 import open from "./commands/open";
-
-const taskArgument = new Argument(
-  "[task]",
-  "Task number in the <day> or <day/year> format"
-)
-  .argParser(Parsers.parseTaskNumber)
-  .default(
-    { day: new Date().getDate(), year: new Date().getFullYear() },
-    "today"
-  );
 
 program
   .command("login")
@@ -29,34 +19,46 @@ program
 
 program
   .command("init")
-  .addArgument(taskArgument)
+  .addArgument(
+    new Argument("[task]", "Task number in the <day> or <day/year> format")
+      .default(
+        { day: new Date().getDate(), year: new Date().getFullYear() },
+        "today"
+      )
+      .argParser(Parsers.parseTaskNumber)
+  )
   .option("-l, --lang <template>", "Template language to use", "go")
   .option("--open", "Open task in browser", false)
   .description("init task directory using given template language")
   .action(init);
 
+const TASK_ARG = new Argument(
+  "[task]",
+  "Task number in the <day> or <day/year> format"
+);
+
 program
   .command("advance")
-  .addArgument(taskArgument)
+  .addArgument(TASK_ARG)
   .option("--open", "Open task in browser", false)
   .description("advance task to second part if first part is submitted")
-  .action(advance);
+  .action(parseTask(advance));
 
 program
   .command("run")
-  .addArgument(taskArgument)
+  .addArgument(TASK_ARG)
   .description("invoke run command for the task template")
-  .action(run);
+  .action(parseTask(run));
 
 program
   .command("test")
-  .addArgument(taskArgument)
+  .addArgument(TASK_ARG)
   .description("run tests for the task")
-  .action(test);
+  .action(parseTask(test));
 
 program
   .command("open")
-  .addArgument(taskArgument)
+  .addArgument(TASK_ARG)
   .description("open task description in your default browser")
   .action(open);
 
@@ -77,7 +79,23 @@ function handleError(e: unknown) {
         ".scafconfig"
       )} to link it.`
     );
+  } else if (e instanceof NoTaskInCwdError) {
+    Logger.panic(
+      "Current working directory is not a scaf task",
+      `Make sure you are in the ${Colors.yellow(
+        "correct path"
+      )} or specify ${Colors.yellow("task number")}.`
+    );
   } else {
     throw e;
   }
+}
+
+function parseTask(action: (...args: any[]) => void) {
+  return (task: string | undefined, ...params: unknown[]) => {
+    return action(
+      Parsers.parseTask(task ? Parsers.parseTaskNumber(task) : undefined),
+      ...params
+    );
+  };
 }

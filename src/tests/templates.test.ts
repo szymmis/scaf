@@ -5,6 +5,7 @@ import { describe, it, expect, vi } from "vitest";
 import init from "../bin/commands/init";
 import advance from "../bin/commands/advance";
 import { Cache } from "../lib/cache";
+import { Parsers } from "../bin/parsers";
 
 describe.each(await fs.readdir(path.join(__dirname, "../../templates")))(
   "Test '%s' template",
@@ -52,7 +53,7 @@ describe.each(await fs.readdir(path.join(__dirname, "../../templates")))(
           fs.readFile(path.join(cwd, ".cache/2021_01.html"), "utf-8")
         );
 
-      await advance({ day: 1, year: 2021 }, { open: false });
+      await advance(Parsers.parseTask({ day: 1, year: 2021 }), { open: false });
     });
 
     it("removes all comments", async () => {
