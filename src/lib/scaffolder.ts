@@ -119,10 +119,7 @@ export class Scaffolder {
 
     const patches = this.getPatches(task, "one", examples[0], answers[0]);
     await this.copyTemplate(task.template.lang, dirname, patches);
-    await fs.writeFile(
-      path.join(dirname, "input.txt"),
-      await Cache.loadTaskInput(task)
-    );
+    await this.createTaskInput(task);
 
     config.setTask(task);
     ConfigParser.write(config);
@@ -155,5 +152,13 @@ export class Scaffolder {
     }
 
     return dirname;
+  }
+
+  static async createTaskInput(task: Task) {
+    const inputPath = task.getInputPath();
+
+    if (!fsSync.existsSync(inputPath)) {
+      await fs.writeFile(inputPath, await Cache.loadTaskInput(task));
+    }
   }
 }

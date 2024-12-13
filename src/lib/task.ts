@@ -1,3 +1,4 @@
+import path from "path";
 import { Template } from "./template";
 
 export class Task {
@@ -15,5 +16,9 @@ export class Task {
 
   getPath(): string {
     return this.path;
+  }
+
+  getInputPath(): string {
+    return path.join(this.getPath(), "input.txt");
   }
 }
