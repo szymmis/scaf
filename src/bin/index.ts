@@ -10,6 +10,7 @@ import login from "./commands/login";
 import { MissingTaskError } from "../lib/errors";
 import { Logger } from "../lib/logger";
 import { Colors } from "../lib/colors";
+import open from "./commands/open";
 
 const taskArgument = new Argument(
   "[task]",
@@ -52,6 +53,12 @@ program
   .addArgument(taskArgument)
   .description("run tests for the task")
   .action(test);
+
+program
+  .command("open")
+  .addArgument(taskArgument)
+  .description("open task description in your default browser")
+  .action(open);
 
 try {
   process.on("unhandledRejection", handleError);
