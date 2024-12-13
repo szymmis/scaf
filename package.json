@@ -1,7 +1,7 @@
 {
   "name": "@szymmis/scaf",
   "description": "A simple tool for scaffolding Advent of Code tasks",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "author": "szymmis",
   "repository": "https://github.com/szymmis/scaf",
   "private": false,
