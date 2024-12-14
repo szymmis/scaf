@@ -10,7 +10,7 @@ import { Parsers } from "../bin/parsers";
 describe.each(await fs.readdir(path.join(__dirname, "../../templates")))(
   "Test '%s' template",
   async (lang: string) => {
-    const cwd = await fs.mkdtemp(os.tmpdir());
+    const cwd = await fs.mkdtemp(os.tmpdir() + path.sep);
 
     it("can init template", async () => {
       console.log = () => {};
