@@ -17,16 +17,25 @@ program
   .description("setup token to authorize into the AoC account")
   .action(login);
 
+const TASK_NUMBER_ARG = new Argument(
+  "[task]",
+  "Task number in the <day> or <day/year> format"
+)
+  .default(
+    { day: new Date().getDate(), year: new Date().getFullYear() },
+    "today"
+  )
+  .argParser(Parsers.parseTaskNumber);
+
+program
+  .command("open")
+  .addArgument(TASK_NUMBER_ARG)
+  .description("open task description in your default browser")
+  .action(open);
+
 program
   .command("init")
-  .addArgument(
-    new Argument("[task]", "Task number in the <day> or <day/year> format")
-      .default(
-        { day: new Date().getDate(), year: new Date().getFullYear() },
-        "today"
-      )
-      .argParser(Parsers.parseTaskNumber)
-  )
+  .addArgument(TASK_NUMBER_ARG)
   .option("-l, --lang <template>", "Template language to use", "go")
   .option("--open", "Open task in browser", false)
   .description("init task directory using given template language")
@@ -55,12 +64,6 @@ program
   .addArgument(TASK_ARG)
   .description("run tests for the task")
   .action(parseTask(test));
-
-program
-  .command("open")
-  .addArgument(TASK_ARG)
-  .description("open task description in your default browser")
-  .action(open);
 
 try {
   process.on("unhandledRejection", handleError);
